@@ -1,0 +1,67 @@
+---
+- name: Add repository for PHP
+  apt_repository:
+    repo="ppa:ondrej/php"
+    update_cache=yes
+  become: yes
+
+- name: Install php extensions
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - libapache2-mod-fastcgi
+    - php{{ php_version }}-fpm
+    - php{{ php_version }}-mysql
+    - php{{ php_version }}-curl
+    - php{{ php_version }}-gd
+    - php{{ php_version }}-json
+    - php{{ php_version }}-mcrypt
+    - php{{ php_version }}-opcache
+    - php{{ php_version }}-xml
+    - php{{ php_version }}-mbstring
+    - php{{ php_version }}-cli
+    - php{{ php_version }}-intl
+    - php{{ php_version }}-common
+    - php{{ php_version }}-zip
+    - php-memcache
+    - php-memcached
+
+- name: Create php-fpm config
+  notify: restart apache
+  template: src=php-fpm.conf.j2 dest=/etc/apache2/conf-available/php{{ php_version }}-fpm.conf
+  become: yes
+
+- name: Enable php-fpm modules
+  apache2_module: state=present name={{ item }}
+  become: true
+  with_items:
+    - actions
+    - fastcgi
+    - alias
+
+- name: Enable php{{ php_version }}-fpm conf
+  command: a2enconf php{{ php_version }}-fpm
+  become: yes
+
+- name: Configure php-fpm ini config
+  template: src=php.ini.j2 dest=/etc/php/{{ php_version }}/fpm/php.ini
+  become: yes
+
+- name: Configure php-fpm pool config
+  template: src=www.conf.j2 dest=/etc/php/{{ php_version }}/fpm/pool.d/www.conf
+  become: yes
+
+- name: Set 99_custom_php settings
+  ini_file: dest=/etc/php/{{ php_version }}/fpm/conf.d/99_custom_php.ini
+            section=PHP
+            option={{ item.name }}
+            value={{ item.value }}
+            backup=no
+  with_items:
+    - { name: 'upload_max_filesize', value: {{ upload_max_filesize }} }
+    - { name: 'post_max_size', value: {{ post_max_size }} }
+  sudo: true
+
+- name: Restart php{{ php_version }}-fpm
+  service: name=php{{ php_version }}-fpm state=restarted
+  become: yes
