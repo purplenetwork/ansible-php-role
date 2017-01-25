@@ -64,3 +64,7 @@
 - name: Restart php{{ php_version }}-fpm
   service: name=php{{ php_version }}-fpm state=restarted
   become: yes
+
+- name: Restart apache
+  service: name=apache2 state=restarted
+  become: yes
