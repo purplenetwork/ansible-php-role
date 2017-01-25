@@ -27,7 +27,6 @@
     - php-memcached
 
 - name: Create php-fpm config
-  notify: restart apache
   template: src=php-fpm.conf.j2 dest=/etc/apache2/conf-available/php{{ php_version }}-fpm.conf
   become: yes
 
