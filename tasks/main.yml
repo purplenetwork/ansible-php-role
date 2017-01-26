@@ -57,8 +57,8 @@
             value={{ item.value }}
             backup=no
   with_items:
-    - { name: 'upload_max_filesize', value: {{ upload_max_filesize }} }
-    - { name: 'post_max_size', value: {{ post_max_size }} }
+    - { name: 'upload_max_filesize', value: '{{ upload_max_filesize }}' }
+    - { name: 'post_max_size', value: '{{ post_max_size }}' }
   sudo: true
 
 - name: Restart php{{ php_version }}-fpm
