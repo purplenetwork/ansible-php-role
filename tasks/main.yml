@@ -60,6 +60,7 @@
     - { name: 'upload_max_filesize', value: '{{ upload_max_filesize }}' }
     - { name: 'post_max_size', value: '{{ post_max_size }}' }
     - { name: 'max_execution_time', value: '{{ max_execution_time }}' }
+    - { name: 'session.save_path', value: '{{ session_save_path }}' }
   sudo: true
 
 - name: Restart php{{ php_version }}-fpm

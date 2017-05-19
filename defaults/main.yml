@@ -4,3 +4,4 @@ upload_max_filesize: '50M'
 post_max_size: '50M'
 php_version: '7.1'
 max_execution_time: 30
+session_save_path: '/var/lib/php/sessions'
