@@ -2,7 +2,7 @@
     AddHandler php{{ php_version }}-fcgi .php
     Action php{{ php_version }}-fcgi /php{{ php_version }}-fcgi
     Alias /php{{ php_version }}-fcgi /usr/lib/cgi-bin/php{{ php_version }}-fcgi
-    FastCgiExternalServer /usr/lib/cgi-bin/php{{ php_version }}-fcgi -socket /var/run/php{{ php_version }}-fpm.sock -pass-header Authorization
+    FastCgiExternalServer /usr/lib/cgi-bin/php{{ php_version }}-fcgi -socket /var/run/php{{ php_version }}-fpm.sock -idle-timeout 180 -pass-header Authorization
     <Directory /usr/lib/cgi-bin>
         Options ExecCGI FollowSymLinks
         SetHandler fastcgi-script
