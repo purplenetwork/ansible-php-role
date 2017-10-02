@@ -61,7 +61,7 @@
     - { name: 'post_max_size', value: '{{ post_max_size }}' }
     - { name: 'max_execution_time', value: '{{ max_execution_time }}' }
     - { name: 'session.save_path', value: '{{ session_save_path }}' }
-  sudo: true
+  become: true
 
 - name: Restart php{{ php_version }}-fpm
   service: name=php{{ php_version }}-fpm state=restarted
