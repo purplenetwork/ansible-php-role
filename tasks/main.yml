@@ -8,6 +8,7 @@
 - name: Install php extensions
   apt: name={{ item }} state=present
   become: yes
+  when: php_version != "7.2"
   with_items:
     - libapache2-mod-fastcgi
     - php{{ php_version }}-fpm
@@ -27,6 +28,30 @@
     - php{{ php_version }}-bcmath
     - php-memcache
     - php-memcached
+
+- name: Install php7.2 extensions
+  apt: name={{ item }} state=present
+  become: yes
+  when: php_version == "7.2"
+  with_items:
+    - libapache2-mod-fastcgi
+    - php{{ php_version }}-fpm
+    - php{{ php_version }}-mysql
+    - php{{ php_version }}-curl
+    - php{{ php_version }}-gd
+    - php{{ php_version }}-json
+    - php{{ php_version }}-opcache
+    - php{{ php_version }}-xml
+    - php{{ php_version }}-mbstring
+    - php{{ php_version }}-cli
+    - php{{ php_version }}-intl
+    - php{{ php_version }}-common
+    - php{{ php_version }}-zip
+    - php{{ php_version }}-soap
+    - php{{ php_version }}-bcmath
+    - php-memcache
+    - php-memcached
+
 
 - name: Create php-fpm config
   template: src=php-fpm.conf.j2 dest=/etc/apache2/conf-available/php{{ php_version }}-fpm.conf
@@ -67,8 +92,4 @@
 
 - name: Restart php{{ php_version }}-fpm
   service: name=php{{ php_version }}-fpm state=restarted
-  become: yes
-
-- name: Restart apache
-  service: name=apache2 state=restarted
   become: yes
